@@ -1,8 +1,8 @@
-"""initialization
+"""generated relationships between tables
 
-Revision ID: b5d69f082700
-Revises: 
-Create Date: 2023-03-28 14:02:11.953925
+Revision ID: 42536e3ead1a
+Revises: 110d72d0dd48
+Create Date: 2023-03-29 12:56:57.042418
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'b5d69f082700'
-down_revision = None
+revision = '42536e3ead1a'
+down_revision = '110d72d0dd48'
 branch_labels = None
 depends_on = None
 

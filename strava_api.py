@@ -30,6 +30,9 @@ param = {'per_page': 200, 'page': 1}
 
 # Get Profile from Strava and add to database
 def get_profile():
+#     session.query(Profile).delete()
+#     session.commit()
+# get_profile()
   my_profile = requests.get(profile_url, headers=header).json()
   profile_cols = ['username', 'firstname', 'lastname', 'bio',
                   'city', 'state', 'country', 'sex', 'created_at',
@@ -98,6 +101,9 @@ def get_dataset():
             print("Adding activity to database")
             session.add(activity)
             session.commit()
+    # for activity in my_dataset:
+    #     print(activity['type'])
+# get_dataset()
 
 
 # my_stats = requests.get(athlete_stats_url, headers=header).json()
@@ -129,3 +135,23 @@ def get_dataset():
 
 # for i in my_stats:
 #     print(f'{i} : {str(my_stats[i])}')
+
+def scrub():
+    session.query(Activity).delete()
+    session.commit()
+    session.query(Profile).delete()
+    session.commit()
+    session.query(Stats).delete()
+    session.commit()
+    session.query(Achievement).delete()
+    session.commit()
+    session.query(ProfileAchievement).delete()
+    session.commit()
+
+def populate():
+    get_profile()
+    get_dataset()
+
+    
+populate()
+# scrub()

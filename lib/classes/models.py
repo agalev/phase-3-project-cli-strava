@@ -1,6 +1,9 @@
+from datetime import datetime
 from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
+from sqlalchemy.ext.associationproxy import association_proxy
 
 engine = create_engine('sqlite:///strava.db')
 
@@ -20,17 +23,15 @@ class Profile(Base):
     sex = Column(String())
     created_at = Column(String())
     weight = Column(Integer())
+    last_updated = Column(String(), default=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
-class Stats(Base):
-    __tablename__ = 'stats'
+    activities = relationship("Activity", backref=backref("profile"))
+    stats = relationship("Stats", backref=backref("profile"))
+    profile_achievements = relationship("ProfileAchievement", back_populates="profiles")
+    achievements = association_proxy("profile_achievements", "achievements", creator=lambda achievements: ProfileAchievement(achievements=achievements))
 
-    id = Column(Integer(), primary_key=True)
-    total_distance = Column(Integer())
-    average_speed = Column(Integer())
-    max_speed = Column(Integer())
-    average_heartrate = Column(Integer())
-    max_heartrate = Column(Integer())
-    profile_id = Column(Integer(), ForeignKey('profiles.id'))
+    def __repr__(self):
+        return f'Profile username: {self.username}'
 
 class Activity(Base):
     __tablename__ = 'activities'
@@ -58,11 +59,30 @@ class Activity(Base):
     pr_count = Column(Integer())
     profile_id = Column(Integer(), ForeignKey('profiles.id'))
 
+    profile_achievements = relationship("ProfileAchievement", back_populates="activities")
+
+    def __repr__(self):
+        return f'Activity id: {self.id}'
+    
+class Stats(Base):
+    __tablename__ = 'stats'
+
+    id = Column(Integer(), primary_key=True)
+    type = Column(String())
+    total_distance = Column(Integer())
+    average_speed = Column(Integer())
+    max_speed = Column(Integer())
+    average_heartrate = Column(Integer())
+    max_heartrate = Column(Integer())
+    profile_id = Column(Integer(), ForeignKey('profiles.id'))
+
+
 class Achievement(Base):
     __tablename__ = 'achievements'
 
     id = Column(Integer(), primary_key=True)
     name = Column(String())
+    description = Column(String())
     type = Column(String())
     elapsed_time = Column(Integer())
     distance = Column(Integer())
@@ -71,9 +91,20 @@ class Achievement(Base):
     average_heartrate = Column(Integer())
     max_heartrate = Column(Integer())
 
+    profile_achievements = relationship("ProfileAchievement", back_populates="achievements")
+    profile = association_proxy("profile_achievements", "profile", creator=lambda profile: ProfileAchievement(profile=profile))
+
+    def __repr__(self):
+        return f'Achievement name: {self.name}'
+
 class ProfileAchievement(Base):
     __tablename__ = 'profile_achievements'
 
     id = Column(Integer(), primary_key=True)
     profile_id = Column(Integer(), ForeignKey('profiles.id'))
     achievement_id = Column(Integer(), ForeignKey('achievements.id'))
+    activity_id = Column(Integer(), ForeignKey('activities.id'))
+
+    profiles = relationship("Profile", back_populates="profile_achievements")
+    achievements = relationship("Achievement", back_populates="profile_achievements")
+    activities = relationship("Activity", back_populates="profile_achievements")
