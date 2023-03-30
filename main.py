@@ -4,7 +4,7 @@ from aggregators import *
 from lib.classes.models import *
 
 if __name__ == '__main__':
-    print('''
+    print('''\u001b[33;1m
      _______.___________..______          ___   ____    ____  ___           ______  __       __  
     /       |           ||   _  \        /   \  \   \  /   / /   \         /      ||  |     |  | 
    |   (----`---|  |----`|  |_)  |      /  ^  \  \   \/   / /  ^  \       |  ,----'|  |     |  | 
@@ -12,28 +12,28 @@ if __name__ == '__main__':
 .----)   |      |  |     |  |\  \----./  _____  \  \    / /  _____  \     |  `----.|  `----.|  | 
 |_______/       |__|     | _| `._____/__/     \__\  \__/ /__/     \__\     \______||_______||__| 
 ________________________________________________________________________________________________
-
-Welcome to Strava CLI!
-Please enter a username from the following list to view their profile:
+\u001b[0m
+\u001b[37;1mWelcome to Strava CLI!
+Please enter a your username from the following list to view your profile:\u001b[0m
 ''')
     in_session = True
     usernames = session.query(Profile.username).all()
     if len(usernames) == 0:
         print('''
 _______________________________________________________
-| No profiles exist in the database. Fetch from Strava?
+| \u001b[31;1mNo profiles exist in the database. Fetch from Strava?\u001b[0m
 ''')
         fetch = input('Y/N: ')
         if fetch == 'Y' or fetch == 'y':
             fetch_data()
             print('''
-_______________________________________________________
-| Data has been fetched from Strava.
+_________________________________________________
+| \u001b[32;1mData has been fetched from Strava. Restart App.\u001b[0m
 ''')
         else:
             print('''
-_______________________________________________________
-| Exiting...
+____________
+| \u001b[31;1mExiting...\u001b[0m
 ''')
             in_session = False
     for username in usernames:
@@ -44,35 +44,39 @@ _______________________________________________________
         if profile:
             print(f'''
 _______________________________________
-| Welcome to {profile.firstname} {profile.lastname}'s profile!
+| \u001b[7m Logged in as: {profile.username} \u001b[0m
 |
-| Please enter a number or type the command from the following list to view specific data:
+| \u001b[7m Welcome to your profile {profile.firstname}! \u001b[0m
 |
-| 1. Profile Details
+| \u001b[7m Please enter a number or type the command from the menu: \u001b[0m
 |
-| 2. Aggregated Stats
+| \u001b[33;1m1. Profile Details\u001b[0m
 |
-| 3. List of Achievements
+| \u001b[34;1m2. Aggregated Stats\u001b[0m
 |
-| 4. List of Activities
+| \u001b[35;1m3. List of Achievements\u001b[0m
 |
-| 5. Fetch New Data
+| \u001b[36;1m4. List of Activities\u001b[0m
+|
+| \u001b[32;1m5. Fetch New Data From Strava? (Last Updated: {profile.last_updated})\u001b[0m
+|
+| \u001b[31;1m6. Logout\u001b[0m
 ''')
             command = input('Command: ')
             if command == '1' or command == 'Profile':
                 print(f'{profile}')
-                print('Would you like to edit your profile?')
+                print('\u001b[7m Would you like to edit your profile? \u001b[0m')
                 edit = input('Y/N: ')
                 if edit == 'Y' or edit == 'y':
                     print('''
 ______________________________________________________
-| Please enter the number or type the command from the following list to edit your profile:
+| \u001b[7m Please enter the number or type the command from the following list to edit your profile: \u001b[0m
 |
-| 1. Weight
+| \u001b[33;1m1. Weight\u001b[0m
 |
-| 2. Bio
+| \u001b[33;1m2. Bio\u001b[0m
 |
-| 3. Location
+| \u001b[33;1m3. Location\u001b[0m
 ''')
                     edit_command = input('Command: ')
                     if edit_command == '1' or edit_command == 'Weight':
@@ -81,7 +85,7 @@ ______________________________________________________
                         session.commit()
                         print('''
 ______________________________________________________
-| Your weight has been updated.
+| \u001b[33;1mYour weight has been updated.\u001b[0m
 ''')
                     elif edit_command == '2' or edit_command == 'Bio':
                         new_bio = input('New Bio: ')
@@ -89,7 +93,7 @@ ______________________________________________________
                         session.commit()
                         print('''
 ______________________________________________________
-| Your bio has been updated.
+| \u001b[33;1mYour bio has been updated.\u001b[0m
 ''')
                     elif edit_command == '3' or edit_command == 'Location':
                         new_city = input('New City: ')
@@ -101,41 +105,60 @@ ______________________________________________________
                         session.commit()
                         print('''
 ______________________________________________________
-| Your location has been updated.
+| \u001b[33;1mYour location has been updated.\u001b[0m
 ''')
                     else:
                         print('''
 ______________________________________________________
-| Sorry, that is not a valid command.
+| \u001b[33;1mSorry, that is not a valid command.\u001b[0m
 ''')
                 elif edit == 'N' or edit == 'n':
                     print('''
 ______________________________________________________
-| Returning to main menu.
+| \u001b[33;1mReturning to main menu.\u001b[0m
 ''')
                 else:
                     print('''
 ______________________________________________________
-| Sorry, that is not a valid command.
+| \u001b[33;1mSorry, that is not a valid command.\u001b[0m
 ''')
             elif command == '2' or command == 'Aggregated Stats':
                 stats = session.query(Stats).filter_by(profile_id=profile.id).all()
                 for stat in stats:
                     print(stat)
             elif command == '3' or command == 'List of Achievements':
-                achievements = session.query(ProfileAchievement).filter_by(profile_id=profile.id).all()
-                for achievement in achievements:
-                    print(achievement)
+                print('''
+____________________________________________________________________________________________________
+| \u001b[7m Please enter the number or type the command from the following list to view specific achievements: \u001b[0m
+|
+| \u001b[35;1m1. All Achievements\u001b[0m
+|
+| \u001b[35;1m2. Achievements Earned\u001b[0m
+''')
+                achievement_command = input('Command: ')
+                if achievement_command == '1' or achievement_command == 'All Achievements':
+                    achievements = session.query(Achievement).all()
+                    for achievement in achievements:
+                        print(achievement)
+                elif achievement_command == '2' or achievement_command == 'Achievements Earned':
+                    achievements = session.query(ProfileAchievement).filter_by(profile_id=profile.id).all()
+                    for achievement in achievements:
+                        print(achievement)
+                else:
+                    print('''
+_____________________________________
+| \u001b[35;1mSorry, that is not a valid command.\u001b[0m
+''')
             elif command == '4' or command == 'List of Activities':
                 print('''
 __________________________________________________________________________________________________
-| Please enter the number or type the command from the following list to view specific activities:
+| \u001b[7m Please enter the number or type the command from the following list to view specific activities: \u001b[0m
 |
-| 1. All Activities
+| \u001b[36;1m1. All Activities\u001b[0m
 |
-| 2. Activities by Type
+| \u001b[36;1m2. Activities by Type\u001b[0m
 |
-| 3. Last 10 Activities
+| \u001b[36;1m3. Last 10 Activities\u001b[0m
 ''')
                 activity_command = input('Command: ')
                 if activity_command == '1' or activity_command == 'All Activities':
@@ -145,15 +168,15 @@ ________________________________________________________________________________
                 elif activity_command == '2' or activity_command == 'Activities by Type':
                     print('''
 __________________________________________________________________________________________________
-| Please enter the number or type the command from the following list to view specific activities:
+| \u001b[7m Please enter the number or type the command from the following list to view specific activities: \u001b[0m
 |
-| 1. Ride
+| \u001b[36;1m1. Ride\u001b[0m
 |
-| 2. Run
+| \u001b[36;1m2. Run\u001b[0m
 |
-| 3. Inline Skating
+| \u001b[36;1m3. Inline Skating\u001b[0m
 |
-| 4. Hike
+| \u001b[36;1m4. Hike\u001b[0m
 |
 ''')
                     activity_type_command = input('Command: ')
@@ -176,7 +199,7 @@ ________________________________________________________________________________
                     else:
                         print('''
 ______________________________________________________
-| Sorry, that is not a valid command.
+| \u001b[7m Sorry, that is not a valid command. \u001b[0m
 ''')
                 elif activity_command == '3' or activity_command == 'Last 10 Activities':
                     activities = session.query(Activity).filter_by(profile_id=profile.id).all()
@@ -185,18 +208,28 @@ ______________________________________________________
                 else:
                     print('''
 ______________________________________________________
-| Sorry, that is not a valid command.
+| \u001b[7m Sorry, that is not a valid command. \u001b[0m
 ''')
             elif command == '5' or command == 'Fetch New Data':
                 print('''
 ______________________________________________________
-| Fetching new data from Strava...
+| \u001b[32;1mFetching new data from Strava...\u001b[0m
 ''')
                 fetch_data()
+                print('''
+_______________________________________________________
+| \u001b[32;1mData has been fetched from Strava. Restart App.\u001b[0m
+''')
+                in_session = False
+            elif command == '6' or command == 'Logout':
+                print('''
+______________________________________
+| \u001b[31;1mLogging out...\u001b[0m
+''')
+                in_session = False
         else:
             in_session = False
             print('''
-______________________________________________________
-| Sorry, that username does not exist in the database.
-| Please try again later.
+______________________________________________________________________________________________
+| \u001b[31;1mSorry, that username does not exist in the database. Please try again later.\u001b[0m
 ''')

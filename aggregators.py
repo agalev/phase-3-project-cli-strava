@@ -1,16 +1,13 @@
 from pandas import DataFrame
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from lib.classes.models import Stats, Activity, Profile, Achievement
+from lib.classes.models import Stats, Activity
 
 engine = create_engine('sqlite:///strava.db')
 Session = sessionmaker(bind=engine)
 session = Session()
 
 def aggregate_stats():
-#     session.query(Stats).delete()
-#     session.commit()
-# aggregate_stats()
     # Get all activities from database
     activities = session.query(Activity).all()
     # Create empty list for each type to store aggregate stats

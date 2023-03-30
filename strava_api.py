@@ -1,5 +1,4 @@
 import requests
-import pandas as pd
 import api_key
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -100,46 +99,15 @@ def get_dataset():
                             profile_id = 1
                             )
         if session.query(Activity).filter_by(strava_id=activity.strava_id).first():
-            print("Activity already exists")
+            print("Attempted to add activity but it already exists")
         else:
-            print("Adding activity to database")
             session.add(activity)
             session.commit()
 
-# my_stats = requests.get(athlete_stats_url, headers=header).json()
-
-
-# print(([my_profile[col] for col in profile_cols]))
-# profile = Profile([my_profile[col] for col in profile_cols])
-# my_profile = "username = 'alexander_galev', firstname = 'Alexander', lastname = 'Galev', bio = 'Mainly rollerblading, some run and bike.', city = 'Denver', state = 'Colorado', country = 'United States', sex = 'M', created_at = '2022-02-23T02:19:26Z', weight = 77.1107"
-
-
-# stats_cols = ['biggest_ride_distance', 'all_ride_totals',
-#               'all_run_totals', 'ytd_ride_totals', 'ytd_run_totals']
-
-# print(my_profile)
-# activities = pd.json_normalize(my_dataset[0])
-# print(activities[cols])
-# print(activities.columns)
-
-# for i in range(len(my_dataset)):
-#     print(f'Activity {i}:')
-#     for col in activity_cols:
-#         try:
-#           print(f'\t{col}: {my_dataset[i][col]}')
-#         except: print(f'\t{col}: None')
-
-# for i in range(len(my_dataset)):
-#     print(f'Activity {i}: \n {my_dataset[i]}')
-
-
-# for i in my_stats:
-#     print(f'{i} : {str(my_stats[i])}')
-
 def scrubDB():
-    session.query(Activity).delete()
-    session.commit()
     session.query(Profile).delete()
+    session.commit()
+    session.query(Activity).delete()
     session.commit()
     session.query(Stats).delete()
     session.commit()
@@ -155,9 +123,9 @@ def fetch_data():
     get_profile()
     print('Fetching Activity Data...')
     get_dataset()
-    print('Fetching Stats Data...')
+    print('Generating Stats Data...')
     aggregate_stats()
-    print('Fetching Achievement Data...')
+    print('Generating Achievement Data...')
     seed_achievements()
-    print('Fetching Profile Achievement Data...')
+    print('Generating Profile Achievement Data...')
     profile_achievements()

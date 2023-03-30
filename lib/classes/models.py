@@ -35,27 +35,27 @@ class Profile(Base):
     def __repr__(self):
         return f'''
 ___________________________
-| Profile Details
+| \u001b[7m Profile Details \u001b[0m
 |
-| ID: {self.id}
+| \u001b[33;1mID: {self.id}\u001b[0m
 |
-| Created At: {self.created_at}
+| \u001b[33;1mCreated At: {self.created_at}\u001b[0m
 |
-| Username: {self.username}
+| \u001b[33;1mUsername: {self.username}\u001b[0m
 |
-| First Name: {self.firstname}
+| \u001b[33;1mFirst Name: {self.firstname}\u001b[0m
 |
-| Last Name: {self.lastname}
+| \u001b[33;1mLast Name: {self.lastname}\u001b[0m
 |
-| Gender: {self.sex}
+| \u001b[33;1mGender: {self.sex}\u001b[0m
 |
-| Weight: {int(self.weight)} lbs
+| \u001b[33;1mWeight: {int(self.weight)} kg\u001b[0m
 |
-| Short Bio: {self.bio}
+| \u001b[33;1mShort Bio: {self.bio}\u001b[0m
 |
-| Location: {self.city}, {self.state}, {self.country}
+| \u001b[33;1mLocation: {self.city}, {self.state}, {self.country}\u001b[0m
 |
-| Last Updated from Strava: {self.last_updated}
+| \u001b[33;1mLast Updated from Strava: {self.last_updated}\u001b[0m
 '''
 
 class Activity(Base):
@@ -89,25 +89,25 @@ class Activity(Base):
     def __repr__(self):
         return f'''
 __________________________
-| Activity id: {self.id}'
-| Type: {self.type}
-| Distance: {int(self.distance * 0.000621371 )} miles
-| Moving Time: {int(self.moving_time / 60)} minutes
-| Down Time: {int((self.elapsed_time - self.moving_time) / 60)} minutes
-| Elapsed Time: {int(self.elapsed_time / 60)} minutes
-| Total Elevation Gain: {int(self.total_elevation_gain * 3.28084)} feet
-| Start Date: {self.start_date_local}
-| Timezone: {self.timezone}
-| Achievement Count: {self.achievement_count}
-| Kudos Count: {self.kudos_count}
-| Comment Count: {self.comment_count}
-| Average Speed: {int(self.average_speed * 2.23)} mph
-| Max Speed: {round(self.max_speed * 2.23, 2)} mph
-| Average Heartrate: {int(self.average_heartrate) if isinstance(self.average_heartrate, int) else 'N/A'} bpm
-| Max Heartrate: {self.max_heartrate if isinstance(self.max_heartrate, int) else 'N/A'} bpm
-| Elevation High: {int(self.elev_high * 3.28084)} feet
-| Elevation Low: {int(self.elev_low * 3.28084)} feet
-| PR Count: {self.pr_count}
+| \u001b[36;1mActivity id: {self.id}\u001b[0m
+| \u001b[36;1mType: {self.type}\u001b[0m
+| \u001b[36;1mDistance: {int(self.distance * 0.000621371 )} miles\u001b[0m
+| \u001b[36;1mMoving Time: {int(self.moving_time / 60)} minutes\u001b[0m
+| \u001b[36;1mDown Time: {int((self.elapsed_time - self.moving_time) / 60)} minutes\u001b[0m
+| \u001b[36;1mElapsed Time: {int(self.elapsed_time / 60)} minutes\u001b[0m
+| \u001b[36;1mTotal Elevation Gain: {int(self.total_elevation_gain * 3.28084)} feet\u001b[0m
+| \u001b[36;1mStart Date: {self.start_date_local}\u001b[0m
+| \u001b[36;1mTimezone: {self.timezone}\u001b[0m
+| \u001b[36;1mAchievement Count: {self.achievement_count}\u001b[0m
+| \u001b[36;1mKudos Count: {self.kudos_count}\u001b[0m
+| \u001b[36;1mComment Count: {self.comment_count}\u001b[0m
+| \u001b[36;1mAverage Speed: {int(self.average_speed * 2.23)} mph\u001b[0m
+| \u001b[36;1mMax Speed: {round(self.max_speed * 2.23, 2)} mph\u001b[0m
+| \u001b[36;1mAverage Heartrate: {int(self.average_heartrate) if isinstance(self.average_heartrate, int) else 'N/A'} bpm\u001b[0m
+| \u001b[36;1mMax Heartrate: {self.max_heartrate if isinstance(self.max_heartrate, int) else 'N/A'} bpm\u001b[0m
+| \u001b[36;1mElevation High: {int(self.elev_high * 3.28084)} feet\u001b[0m
+| \u001b[36;1mElevation Low: {int(self.elev_low * 3.28084)} feet\u001b[0m
+| \u001b[36;1mPR Count: {self.pr_count}\u001b[0m
 '''
     
 class Stats(Base):
@@ -125,7 +125,7 @@ class Stats(Base):
     def __repr__(self):
         return f'''
 ________________________________________________________________________________________________________________________________________________________
-| Type: {self.type} | Total Distance: {int(self.total_distance * 0.000621371 )} miles | Average Speed: {int(self.average_speed * 2.23)} mph | Max Speed: {self.max_speed * 2.23} mph | Average Heartrate: {int(self.average_heartrate)} bpm | Max Heartrate: {self.max_heartrate if isinstance(self.max_heartrate, int) else 'N/A'} bpm
+|\u001b[34;1m Type: {self.type} | Total Distance: {int(self.total_distance * 0.000621371 )} miles | Average Speed: {int(self.average_speed * 2.23)} mph | Max Speed: {self.max_speed * 2.23} mph | Average Heartrate: {int(self.average_heartrate)} bpm | Max Heartrate: {self.max_heartrate if isinstance(self.max_heartrate, int) else 'N/A'} bpm \u001b[0m
 '''
 
 class Achievement(Base):
@@ -146,7 +146,10 @@ class Achievement(Base):
     profile = association_proxy("profile_achievements", "profile", creator=lambda profile: ProfileAchievement(profile=profile))
 
     def __repr__(self):
-        return f'Achievement name: {self.name}'
+        return f'''
+____________________________________________
+|\u001b[35;1mAchievement: {self.name}\u001b[0m
+'''
 
 class ProfileAchievement(Base):
     __tablename__ = 'profile_achievements'
@@ -170,7 +173,7 @@ class ProfileAchievement(Base):
         profile, achievement, activity = self.lookup(self.profile_id, self.achievement_id, self.activity_id)    
         return f'''
 ___________________________________________
-| Achievement: {achievement.name}
-| Earned on: {activity.start_date_local}
-| Actual distance: {round(activity.distance * 0.000621371, 2)} miles | Actual time: {int(activity.elapsed_time / 60)} minutes | Average speed: {round(activity.average_speed * 2.23, 2)} mph | Average heartrate: {int(activity.average_heartrate)} bpm | Max heartrate: {activity.max_heartrate if isinstance(activity.max_heartrate, int) else 'N/A'} bpm
+| \u001b[35;1mAchievement: {achievement.name}\u001b[0m
+| \u001b[35;1mEarned on: {activity.start_date_local}\u001b[0m
+| \u001b[35;1mActual distance: {round(activity.distance * 0.000621371, 2)} miles | Actual time: {int(activity.elapsed_time / 60)} minutes | Average speed: {round(activity.average_speed * 2.23, 2)} mph | Average heartrate: {int(activity.average_heartrate)} bpm | Max heartrate: {activity.max_heartrate if isinstance(activity.max_heartrate, int) else 'N/A'} bpm\u001b[0m
 '''
