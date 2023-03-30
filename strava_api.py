@@ -6,6 +6,9 @@ from sqlalchemy.orm import sessionmaker
 
 from lib.classes.models import Profile, Activity, Stats, Achievement, ProfileAchievement
 
+from achievements import *
+from aggregators import *
+
 engine = create_engine('sqlite:///strava.db')
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -21,43 +24,44 @@ payload = {
     'f': 'json'
 }
 # Refresh Token
-print("Requesting Token...\n")
-res = requests.post(auth_url, data=payload, verify=False)
-access_token = res.json()['access_token']
-print("Access Token = {}\n".format(access_token))
-header = {'Authorization': 'Bearer ' + access_token}
-param = {'per_page': 200, 'page': 1}
+def refresh_token():
+    print("Requesting Token...\n")
+    res = requests.post(auth_url, data=payload, verify=False)
+    access_token = res.json()['access_token']
+    print("Access Token = {}\n".format(access_token))
+    header = {'Authorization': 'Bearer ' + access_token}
+    param = {'per_page': 200, 'page': 1}
+    return header, param
 
 # Get Profile from Strava and add to database
 def get_profile():
-#     session.query(Profile).delete()
-#     session.commit()
-# get_profile()
-  my_profile = requests.get(profile_url, headers=header).json()
-  profile_cols = ['username', 'firstname', 'lastname', 'bio',
-                  'city', 'state', 'country', 'sex', 'created_at',
-                  'weight']
-  formatted_profile = [my_profile[col] for col in profile_cols]
-  profile = Profile(username = formatted_profile[0],
-                    firstname = formatted_profile[1],
-                    lastname = formatted_profile[2],
-                    bio = formatted_profile[3],
-                    city = formatted_profile[4],
-                    state = formatted_profile[5],
-                    country = formatted_profile[6],
-                    sex = formatted_profile[7],
-                    created_at = formatted_profile[8],
-                    weight = formatted_profile[9]
-                    )
-  if session.query(Profile).filter_by(username=profile.username).first():
-      print("Profile already exists")
-  else:
-      print("Adding profile to database")
-      session.add(profile)
-      session.commit()
+    header, param = refresh_token()
+    my_profile = requests.get(profile_url, headers=header, params=param).json()
+    profile_cols = ['username', 'firstname', 'lastname', 'bio',
+                    'city', 'state', 'country', 'sex', 'created_at',
+                    'weight']
+    formatted_profile = [my_profile[col] for col in profile_cols]
+    profile = Profile(username = formatted_profile[0],
+                        firstname = formatted_profile[1],
+                        lastname = formatted_profile[2],
+                        bio = formatted_profile[3],
+                        city = formatted_profile[4],
+                        state = formatted_profile[5],
+                        country = formatted_profile[6],
+                        sex = formatted_profile[7],
+                        created_at = formatted_profile[8],
+                        weight = formatted_profile[9]
+                        )
+    if session.query(Profile).filter_by(username=profile.username).first():
+        print("Profile already exists")
+    else:
+        print("Adding profile to database")
+        session.add(profile)
+        session.commit()
   
 # Get Activities from Strava and add to database
 def get_dataset():
+    header, param = refresh_token()
     my_dataset = requests.get(activites_url, headers=header, params=param).json()
     activity_cols = ['type', 'distance', 'moving_time', 'elapsed_time',
         'total_elevation_gain', 'start_date_local', 'timezone',
@@ -101,10 +105,6 @@ def get_dataset():
             print("Adding activity to database")
             session.add(activity)
             session.commit()
-    # for activity in my_dataset:
-    #     print(activity['type'])
-# get_dataset()
-
 
 # my_stats = requests.get(athlete_stats_url, headers=header).json()
 
@@ -136,7 +136,7 @@ def get_dataset():
 # for i in my_stats:
 #     print(f'{i} : {str(my_stats[i])}')
 
-def scrub():
+def scrubDB():
     session.query(Activity).delete()
     session.commit()
     session.query(Profile).delete()
@@ -148,10 +148,16 @@ def scrub():
     session.query(ProfileAchievement).delete()
     session.commit()
 
-def populate():
+def fetch_data():
+    print('Scrubbing Database...')
+    scrubDB()
+    print('Fetching Profile Data...')
     get_profile()
+    print('Fetching Activity Data...')
     get_dataset()
-
-    
-populate()
-# scrub()
+    print('Fetching Stats Data...')
+    aggregate_stats()
+    print('Fetching Achievement Data...')
+    seed_achievements()
+    print('Fetching Profile Achievement Data...')
+    profile_achievements()

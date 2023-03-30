@@ -1,11 +1,13 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import sessionmaker, relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.ext.associationproxy import association_proxy
 
 engine = create_engine('sqlite:///strava.db')
+Session = sessionmaker(bind=engine)
+session = Session()
 
 Base = declarative_base()
 
@@ -31,7 +33,30 @@ class Profile(Base):
     achievements = association_proxy("profile_achievements", "achievements", creator=lambda achievements: ProfileAchievement(achievements=achievements))
 
     def __repr__(self):
-        return f'Profile username: {self.username}'
+        return f'''
+___________________________
+| Profile Details
+|
+| ID: {self.id}
+|
+| Created At: {self.created_at}
+|
+| Username: {self.username}
+|
+| First Name: {self.firstname}
+|
+| Last Name: {self.lastname}
+|
+| Gender: {self.sex}
+|
+| Weight: {int(self.weight)} lbs
+|
+| Short Bio: {self.bio}
+|
+| Location: {self.city}, {self.state}, {self.country}
+|
+| Last Updated from Strava: {self.last_updated}
+'''
 
 class Activity(Base):
     __tablename__ = 'activities'
@@ -62,7 +87,28 @@ class Activity(Base):
     profile_achievements = relationship("ProfileAchievement", back_populates="activities")
 
     def __repr__(self):
-        return f'Activity id: {self.id}'
+        return f'''
+__________________________
+| Activity id: {self.id}'
+| Type: {self.type}
+| Distance: {int(self.distance * 0.000621371 )} miles
+| Moving Time: {int(self.moving_time / 60)} minutes
+| Down Time: {int((self.elapsed_time - self.moving_time) / 60)} minutes
+| Elapsed Time: {int(self.elapsed_time / 60)} minutes
+| Total Elevation Gain: {int(self.total_elevation_gain * 3.28084)} feet
+| Start Date: {self.start_date_local}
+| Timezone: {self.timezone}
+| Achievement Count: {self.achievement_count}
+| Kudos Count: {self.kudos_count}
+| Comment Count: {self.comment_count}
+| Average Speed: {int(self.average_speed * 2.23)} mph
+| Max Speed: {round(self.max_speed * 2.23, 2)} mph
+| Average Heartrate: {int(self.average_heartrate) if isinstance(self.average_heartrate, int) else 'N/A'} bpm
+| Max Heartrate: {self.max_heartrate if isinstance(self.max_heartrate, int) else 'N/A'} bpm
+| Elevation High: {int(self.elev_high * 3.28084)} feet
+| Elevation Low: {int(self.elev_low * 3.28084)} feet
+| PR Count: {self.pr_count}
+'''
     
 class Stats(Base):
     __tablename__ = 'stats'
@@ -76,6 +122,11 @@ class Stats(Base):
     max_heartrate = Column(Integer())
     profile_id = Column(Integer(), ForeignKey('profiles.id'))
 
+    def __repr__(self):
+        return f'''
+________________________________________________________________________________________________________________________________________________________
+| Type: {self.type} | Total Distance: {int(self.total_distance * 0.000621371 )} miles | Average Speed: {int(self.average_speed * 2.23)} mph | Max Speed: {self.max_speed * 2.23} mph | Average Heartrate: {int(self.average_heartrate)} bpm | Max Heartrate: {self.max_heartrate if isinstance(self.max_heartrate, int) else 'N/A'} bpm
+'''
 
 class Achievement(Base):
     __tablename__ = 'achievements'
@@ -108,3 +159,18 @@ class ProfileAchievement(Base):
     profiles = relationship("Profile", back_populates="profile_achievements")
     achievements = relationship("Achievement", back_populates="profile_achievements")
     activities = relationship("Activity", back_populates="profile_achievements")
+
+    def lookup(self, profile_id, achievement_id, activity_id):
+        profile = session.query(Profile).filter_by(id=profile_id).first()
+        achievement = session.query(Achievement).filter_by(id=achievement_id).first()
+        activity = session.query(Activity).filter_by(id=activity_id).first()
+        return profile, achievement, activity
+    
+    def __repr__(self):
+        profile, achievement, activity = self.lookup(self.profile_id, self.achievement_id, self.activity_id)    
+        return f'''
+___________________________________________
+| Achievement: {achievement.name}
+| Earned on: {activity.start_date_local}
+| Actual distance: {round(activity.distance * 0.000621371, 2)} miles | Actual time: {int(activity.elapsed_time / 60)} minutes | Average speed: {round(activity.average_speed * 2.23, 2)} mph | Average heartrate: {int(activity.average_heartrate)} bpm | Max heartrate: {activity.max_heartrate if isinstance(activity.max_heartrate, int) else 'N/A'} bpm
+'''

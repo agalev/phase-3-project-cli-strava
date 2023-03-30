@@ -135,7 +135,7 @@ def profile_achievements():
     # session.query(ProfileAchievement).delete()
     # session.commit()
     achievements = session.query(Achievement).all()
-    activities = session.query(Activity).all()
+    activities = session.query(Activity).order_by(Activity.strava_id.asc()).all()
     for activity in activities:
         for achievement in achievements:
             query_profile_achievement = session.query(ProfileAchievement).filter_by(achievement_id = achievement.id, profile_id = activity.profile_id).first()
