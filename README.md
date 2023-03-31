@@ -3,7 +3,9 @@
 ### Tech Stack
 **`Python3` `SQLAlchemy` `Alembic` `SQLite` `Pandas`**
 
-I created Strava CLI at the end of Phase 3 in my bootcamp. As an avid Strava user myself, my idea was to comprise a database of personal, live data that can be synced regularly. It is the culmination of a 3 week journey of learning Python.
+I created Strava CLI at the end of Phase 3 while attending the Flatiron School bootcamp. As an avid Strava user myself, my idea was to comprise a database of personal, live data that can be synced regularly. It is the culmination of a 3 week journey of learning `Python`. My focus was on leveraging the power of `Python` to control & transform data and making use of `SQL` to communicate with databases. Here is a diagram of the relationships between the tables for this project:
+
+![STRAVA CLI Table relations](https://user-images.githubusercontent.com/17399666/229212476-a75e76c8-66d0-443a-9713-0d483830f059.png)
 
 The application utilizes the publicly available [`Strava API`](https://developers.strava.com) for fetching `profile` and `activities` data into the application and storing it locally in a `SQLite` database. I then use that data to aggregate some additional stats that are not part of the original Strava app. One of the constraints my instructor imposed was that we build a Python app with a command line interface.
 
