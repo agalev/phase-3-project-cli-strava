@@ -91,7 +91,7 @@ You're welcome to explore the app through Github or fork/clone it to test yourse
 
 ❖ Type `python main.py` to start the application.
 
-***Please reach out if you run into hurdles or have questions regarding the setup***
+***Please reach out if you run into hurdles or have questions regarding the setup.***
 
 
 
