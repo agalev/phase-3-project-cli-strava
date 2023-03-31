@@ -94,20 +94,3 @@ You're welcome to explore the app through `Github` or fork/clone it to test your
 ❖ Type `python main.py` to start the application.
 
 ***Please reach out if you have suggestions, run into hurdles or have questions regarding the setup.***
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
