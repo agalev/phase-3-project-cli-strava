@@ -128,12 +128,8 @@ def seed_achievements():
     session.add(bikeHalfMarathon)
     session.add(bikeMarathon)
     session.commit()
-# seed_achievements()
-
 
 def profile_achievements():
-    # session.query(ProfileAchievement).delete()
-    # session.commit()
     achievements = session.query(Achievement).all()
     activities = session.query(Activity).order_by(Activity.strava_id.asc()).all()
     for activity in activities:
@@ -148,4 +144,3 @@ def profile_achievements():
                                                         )
                 session.add(profile_achievement)
                 session.commit()
-profile_achievements()
