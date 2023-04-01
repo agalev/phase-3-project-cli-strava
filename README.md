@@ -3,11 +3,11 @@
 ### Tech Stack & Dependencies
 **`Python3` `SQLAlchemy` `Alembic` `SQLite` `Pandas` `Requests`**
 
-I created Strava CLI at the end of Phase 3 while attending the Flatiron School bootcamp. One of the constraints my instructor imposed was that we build a Python application with a command line interface. As an avid Strava user myself, my idea was to comprise a database of personal, live data that can be synced regularly. It is the culmination of a 3 week journey of learning `Python`. My focus was on leveraging the power of Object Oriented Programming with `Python` to control & transform data, utilizing an Object Relational Mapping methodology and making use of `SQL` to communicate with a database. Here is a diagram of the relationships established between the tables for this project:
+I created Strava CLI at the end of Phase 3 while attending the Flatiron School bootcamp. One of the constraints my instructor imposed was that we build a Python application with a command line interface. As an avid Strava user myself, my idea was to comprise a database of personal, live data that can be synced regularly. It is the culmination of a 3 week journey of learning `Python`. My focus was on leveraging the power of Object Oriented Programming to control & transform data, utilizing an Object Relational Mapping methodology and making use of `SQL` to communicate with a database. Here is a diagram of the relationships established between the tables for this project:
 
 ![STRAVA CLI Table relations](https://user-images.githubusercontent.com/17399666/229212476-a75e76c8-66d0-443a-9713-0d483830f059.png)
 
-The application utilizes the publicly available [`Strava API`](https://developers.strava.com) for fetching `profile` and `activities` data into the application with the help of `Requests` module and storing it locally in a `SQLite` database. `SQL` queries and commands are handled through the powerful module `SQLAlchemy`. Version control on DB was implemented through `Alembic`. With the help of `Pandas` module, I then used the data to aggregate some additional stats that are not part of the original Strava app.
+The application utilizes the publicly available [`Strava API`](https://developers.strava.com) for fetching `profile` and `activities` data into the application with the help of `Requests` module. The data is then stored locally in a `SQLite` database. `SQL` queries and commands are handled through the powerful module `SQLAlchemy`. Version control on DB was implemented through `Alembic`. With the help of `Pandas` module, I then used the data to aggregate some additional stats that are not part of the original Strava app.
 
 ### Future goals include:
 
