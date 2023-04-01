@@ -75,7 +75,7 @@ Upon selecting the fifth top-level option, a function is fired that fetches new 
 
 ### 6) Logout
 
-Yeah.
+Bye Felicia!
 
 ## How To Run The App 
 
